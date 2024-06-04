@@ -31,6 +31,43 @@ class ClientResource extends Resource
     {
         return $table
             ->columns([
+
+                Tables\Columns\TextColumn::make('first_name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('last_name')
+                  ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('phone')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('mobile')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('company')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('role')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('linkedin')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('company_website')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('business_details')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('business_type')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('company_size')
+                   ->searchable(),
+                Tables\Columns\TextColumn::make('temperature')
+                  ->searchable(),
+                Tables\Columns\TextColumn::make('referrals')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('notes')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('active')
+                    ->searchable(),
+
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
