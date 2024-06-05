@@ -221,7 +221,11 @@ class ClientResource extends Resource
                 Tables\Columns\TextColumn::make('notes')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('active')
-                    ->searchable(),
+                   ->badge()
+                   ->color(fn(bool $state) => match ($state){
+                       false => 'info',
+                       true => 'success'
+                }),
 
 
                 Tables\Columns\TextColumn::make('created_at')
