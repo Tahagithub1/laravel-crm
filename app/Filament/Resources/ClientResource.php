@@ -51,8 +51,8 @@ class ClientResource extends Resource
                     TextEntry::make('active')
                     ->badge()
                     ->color(fn(bool $state) => match ($state){
-                        false => 'gray',
-                        true => 'success'
+                        false => 'info',
+                        true => 'success',
                     }),
 
                 ]),
@@ -127,6 +127,7 @@ class ClientResource extends Resource
                                 Forms\Components\Toggle::make('action')
                                     ->required()
                                 ->visibleOn('edit'),
+//                                    ->visible(fn($operation) => $operation === 'edit'),
 
                                 TextInput::make('title')
                                     ->maxLength(255)
@@ -149,12 +150,9 @@ class ClientResource extends Resource
                                 TextInput::make('business_type')
                                     ->maxLength(255)
                                     ->string(),
-                                Select::make('company_size')
-                                    ->options([
-                                       'small' ,
-                                       'medium',
-                                       'large',
-                                    ]),
+                                Forms\Components\Select::make('company_size')->options([
+                                    'small', 'medium', 'big'
+                                ]),
                                 Select::make('temperature')
                                     ->options([
                                         'cold',
@@ -164,7 +162,7 @@ class ClientResource extends Resource
 
 
                             ])
-                            ->disabledOn('craete'),
+                            ->disabledOn('edit'),
 
                         ])
                         ->columnSpan('2'),
@@ -220,12 +218,8 @@ class ClientResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('notes')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('active')
-                   ->badge()
-                   ->color(fn(bool $state) => match ($state){
-                       false => 'info',
-                       true => 'success'
-                }),
+          Tables\Columns\IconColumn::make('active')->boolean(),
+
 
 
                 Tables\Columns\TextColumn::make('created_at')
