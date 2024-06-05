@@ -5,10 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ClientResource\Pages;
 use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\Tabs;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -23,6 +26,64 @@ class ClientResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+            Tabs::make('label')
+            ->Tabs([
+                Tabs\Tab::make('peroenal info')
+                ->schema([
+                    ImageEntry::make('photo'),
+//                    TextEntry::make('first_name'),
+//                    TextEntry::make('last_name'),
+                    TextEntry::make('first_name')
+                        ->label('Name')
+                        ->formatStateUsing(fn($state , $record) => $record->first_name . " " . $record->last_name),
+                    TextEntry::make('phone'),
+                    TextEntry::make('mobile'),
+                    TextEntry::make('email')->copyable(),
+                    TextEntry::make('linkedin')
+                    ->suffixAction(
+                        \Filament\Infolists\Components\Actions\Action::make('open linkedin')
+                        ->icon('heroicon-o-link')
+                        ->url(fn($record) => $record->linkedin)
+                    ),
+                    TextEntry::make('active')
+                    ->badge()
+                    ->color(fn(bool $state) => match ($state){
+                        false => 'gray',
+                        true => 'success'
+                    }),
+
+                ]),
+
+
+                  Tabs\Tab::make('business info')
+                      ->schema([
+                          TextEntry::make('company'),
+                          TextEntry::make('title'),
+                          TextEntry::make('role'),
+                          TextEntry::make('company_website'),
+                          TextEntry::make('business_details'),
+                          TextEntry::make('business_type'),
+                          TextEntry::make('company_size'),
+                          TextEntry::make('temperature'),
+                          ]),
+
+
+                Tabs\Tab::make('Notes')
+                    ->schema([
+                        TextEntry::make('notes'),
+                        TextEntry::make('referrals'),
+                    ]),
+
+
+                  ])
+
+        ]);
+
+    }
+
 
     public static function form(Form $form): Form
     {
@@ -35,6 +96,7 @@ class ClientResource extends Resource
                 ])
                     ->schema([
                         Forms\Components\Section::make()->schema([
+                            // peroenal info
                             Forms\Components\Section::make('peroenal info')->schema([
                                 TextInput::make('first_name')
                                     ->maxLength(255)
@@ -60,9 +122,11 @@ class ClientResource extends Resource
                                     ->required(),
 
                             ]),
+                            // business info
                             Forms\Components\Section::make('business info')->schema([
                                 Forms\Components\Toggle::make('action')
-                                    ->required(),
+                                    ->required()
+                                ->visibleOn('edit'),
 
                                 TextInput::make('title')
                                     ->maxLength(255)
@@ -73,7 +137,7 @@ class ClientResource extends Resource
                                 TextInput::make('role')
                                     ->maxLength(255)
                                     ->string(),
-                                TextInput::make('linkdin')
+                                TextInput::make('linkedin')
                                     ->maxLength(255)
                                     ->string(),
                                 TextInput::make('company_website')
@@ -99,11 +163,8 @@ class ClientResource extends Resource
                                     ]),
 
 
-                            ]),
-                            // peroenal info
-
-                            // business info
-
+                            ])
+                            ->disabledOn('craete'),
 
                         ])
                         ->columnSpan('2'),
@@ -198,6 +259,8 @@ class ClientResource extends Resource
             'index' => Pages\ListClients::route('/'),
             'create' => Pages\CreateClient::route('/create'),
             'edit' => Pages\EditClient::route('/{record}/edit'),
+            'view' => Pages\ViewClient::route('/{record}'),
+
         ];
     }
 }
