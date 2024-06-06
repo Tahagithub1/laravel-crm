@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ClientResource\Pages;
 use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Infolists\Components\ImageEntry;
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ClientResource extends Resource
 {
@@ -119,7 +121,12 @@ class ClientResource extends Resource
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\FileUpload::make('photo')
-                                    ->required(),
+                                    ->getUploadedFileNameForStorageUsing(
+                                        fn (TemporaryUploadedFile $file , Forms\Get $get): string => (string)
+                                        $get('first_name') . $get('last_name') . "-" . Carbon::now()->format('Y-m-d') .".".
+                                        $file->getClientOriginalExtension()
+//                                            ->prepend('custom-prefix-'),
+                                    )
 
                             ]),
                             // business info
