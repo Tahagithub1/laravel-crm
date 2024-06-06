@@ -6,6 +6,7 @@ use App\Filament\Resources\ClientResource\Pages;
 use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
 use Carbon\Carbon;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Infolists\Components\ImageEntry;
@@ -14,6 +15,7 @@ use Filament\Forms\Form;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,6 +23,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Filament\Tables\Columns\Layout\Split;
+
+use Filament\Tables\Columns\Layout\Panel;
+use Filament\Tables\Columns\TextColumn;
 
 class ClientResource extends Resource
 {
@@ -43,7 +49,9 @@ class ClientResource extends Resource
                         ->formatStateUsing(fn($state , $record) => $record->first_name . " " . $record->last_name),
                     TextEntry::make('phone'),
                     TextEntry::make('mobile'),
-                    TextEntry::make('email')->copyable(),
+                    TextEntry::make('email')->copyable()
+                        ->icon('heroicon-m-envelope')
+                        ->iconColor('primary'),
                     TextEntry::make('linkedin')
                     ->suffixAction(
                         \Filament\Infolists\Components\Actions\Action::make('open linkedin')
@@ -92,7 +100,6 @@ class ClientResource extends Resource
 
         return $form
             ->schema([
-
                 Forms\Components\Grid::make([
                     'md' => 3
                 ])
@@ -192,52 +199,99 @@ class ClientResource extends Resource
     {
         return $table
             ->columns([
+//                split::make([
 
-                Tables\Columns\TextColumn::make('first_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('last_name')
-                  ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('mobile')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('company')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('role')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('linkedin')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('company_website')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('business_details')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('business_type')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('company_size')
-                   ->searchable(),
-                Tables\Columns\TextColumn::make('temperature')
-                  ->searchable(),
-                Tables\Columns\TextColumn::make('referrals')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('notes')
-                    ->searchable(),
-          Tables\Columns\IconColumn::make('active')->boolean(),
+                Split::make([
+                    Tables\Columns\ImageColumn::make('photo')->circular(),
+
+                    Tables\Columns\TextColumn::make('first_name')
+                        ->label('Name')
+                        ->formatStateUsing(fn($state , $record) => $record->first_name . " " . $record->last_name)
+                        ->searchable(['first_name' , 'last_name'])
+                        ->icon('heroicon-m-user')
+                        ->iconColor( fn (bool $state) => match ($state){
+                            false => 'info',
+                            true => 'primary',
+                            // error
+                        }
 
 
+                    ),
+//                        ->iconColor(fn(bool $state , $record) => match ($record->active){
+//                            false => 'success'
+//                            true => 'primary',
+//
+//                        }),
+                    Tables\Columns\Layout\Stack::make([
+                        Tables\Columns\TextColumn::make('email')
+                            ->searchable()
+                        ->icon('heroicon-o-envelope'),
+//                 ->visibleFrom('md'),
+                        Tables\Columns\TextColumn::make('phone')
+                            ->searchable()
+                            ->icon('heroicon-s-phone')
+                        ->visibleFrom('md'),
+                        Tables\Columns\TextColumn::make('mobile')
+                            ->searchable()
+                             ->icon('heroicon-o-device-phone-mobile'),
+                    ]),
+                ]),
+                    Panel::make([
+                        Tables\Columns\Layout\Stack::make([
+                            Tables\Columns\TextColumn::make('title')
+                                ->searchable()
+                                ->weight(FontWeight::Bold),
+                            Tables\Columns\TextColumn::make('company')
+                                ->searchable(),
+                            Tables\Columns\TextColumn::make('role')
+                                ->searchable(),
+                            Tables\Columns\TextColumn::make('linkedin')
+                                ->searchable(),
+                            Tables\Columns\TextColumn::make('company_website')
+                                ->searchable()
+                            ->visibleFrom('md'),
+                            Tables\Columns\TextColumn::make('business_details')
+                                ->searchable()
+                            ->visibleFrom('md'),
+                            Tables\Columns\TextColumn::make('business_type')
+                                ->searchable(),
+                            Tables\Columns\TextColumn::make('company_size')
+                                ->searchable(),
+                            Tables\Columns\TextColumn::make('temperature')
+                                ->searchable(),
+                            Tables\Columns\TextColumn::make('referrals')
+                                ->searchable()
+                            ->visibleFrom('md'),
+                            Tables\Columns\TextColumn::make('notes')
+                                ->searchable(),
+                            Tables\Columns\IconColumn::make('active')->boolean(),
+                        ]),
+                    ])->collapsed(false),
 
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
+
+
+
+
+//                split::make([
+
+//
+//                ])
+])
+
+
+
+
+//                Tables\Columns\TextColumn::make('created_at')
+//                    ->dateTime()
+//                    ->sortable()
+//                    ->toggleable(isToggledHiddenByDefault: true)
+//                ->visibleFrom('md'),
+//                Tables\Columns\TextColumn::make('updated_at')
+//                    ->dateTime()
+//                    ->sortable()
+//                    ->toggleable(isToggledHiddenByDefault: true)
+//                ->visibleFrom('md'),
+//            ])
             ->filters([
                 //
             ])
