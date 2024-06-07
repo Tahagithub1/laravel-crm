@@ -2,15 +2,15 @@
 
 namespace App\Filament\Resources\ClientResource\Widgets;
 
-use App\Filament\Resources\ClientResource;
 use App\Models\Client;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 
-class ClientWidget extends ChartWidget
+class ClientWidget2 extends ChartWidget
 {
-    protected static ?string $heading = 'Client Register Chart line';
+    protected static ?string $heading = 'Client Register Chart bar';
     protected int | string | array $columnSpan = ['md' => 2 , 'lg' => 1];
+
 
     protected function getData(): array
     {
@@ -22,26 +22,18 @@ class ClientWidget extends ChartWidget
             ->perMonth()
             ->count();
         return [
-//            'datasets' => [
-//                [
-//                    'label' => 'last register client',
-//                    'data' => [37 , 22 , 50 , 41 ,28 , 60]
-//                ]
-//            ],
-//            'labels' => ['May' , 'Jun' , 'Jul' , 'Aug' , 'Sep' , 'Dct']
             'datasets' => [
                 [
                     'label' => 'last register client',
                     'data' => $data->map(fn($value) => $value->aggregate)
                 ]
             ],
-            'labels' => $data->map(fn($value) => $value->date)
+            'labels' => $data->map(fn($date) => $date->date)
         ];
-
     }
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 }
