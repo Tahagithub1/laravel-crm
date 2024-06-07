@@ -208,15 +208,9 @@ class ClientResource extends Resource
                         ->label('Name')
                         ->formatStateUsing(fn($state , $record) => $record->first_name . " " . $record->last_name)
                         ->searchable(['first_name' , 'last_name'])
+                        ->sortable()
                         ->icon('heroicon-m-user')
-                        ->iconColor( fn (bool $state) => match ($state){
-                            false => 'info',
-                            true => 'primary',
-                            // error
-                        }
-
-
-                    ),
+                        ->iconColor('primary'),
 //                        ->iconColor(fn(bool $state , $record) => match ($record->active){
 //                            false => 'success'
 //                            true => 'primary',
@@ -225,14 +219,17 @@ class ClientResource extends Resource
                     Tables\Columns\Layout\Stack::make([
                         Tables\Columns\TextColumn::make('email')
                             ->searchable()
+                            ->sortable()
                         ->icon('heroicon-o-envelope'),
 //                 ->visibleFrom('md'),
                         Tables\Columns\TextColumn::make('phone')
                             ->searchable()
+                            ->sortable()
                             ->icon('heroicon-s-phone')
                         ->visibleFrom('md'),
                         Tables\Columns\TextColumn::make('mobile')
                             ->searchable()
+                            ->sortable()
                              ->icon('heroicon-o-device-phone-mobile'),
                     ]),
                 ]),
@@ -240,6 +237,7 @@ class ClientResource extends Resource
                         Tables\Columns\Layout\Stack::make([
                             Tables\Columns\TextColumn::make('title')
                                 ->searchable()
+                                ->sortable()
                                 ->weight(FontWeight::Bold),
                             Tables\Columns\TextColumn::make('company')
                                 ->searchable(),
@@ -266,10 +264,7 @@ class ClientResource extends Resource
                                 ->searchable(),
                             Tables\Columns\IconColumn::make('active')->boolean(),
                         ]),
-                    ])->collapsed(false),
-
-
-
+                    ])->collapsed(true),
 
 
 //                split::make([
@@ -277,9 +272,6 @@ class ClientResource extends Resource
 //
 //                ])
 ])
-
-
-
 
 //                Tables\Columns\TextColumn::make('created_at')
 //                    ->dateTime()
@@ -293,11 +285,19 @@ class ClientResource extends Resource
 //                ->visibleFrom('md'),
 //            ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('active')
+                ->query(function (Builder $query):Builder{
+                 return   $query->where('active' , true);
+                })
+                ->default()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make()->requiresConfirmation()
             ])
+//            ,  position: Tables\Enums\ActionsPosition::AfterCells
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -319,6 +319,7 @@ class ClientResource extends Resource
             'create' => Pages\CreateClient::route('/create'),
             'edit' => Pages\EditClient::route('/{record}/edit'),
             'view' => Pages\ViewClient::route('/{record}'),
+//             'undo' => Pages\EditClient::route('/{record}/edit'),
 
         ];
     }
