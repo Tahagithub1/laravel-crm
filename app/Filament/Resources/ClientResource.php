@@ -88,7 +88,7 @@ class ClientResource extends Resource
                     ]),
 
 
-                  ])
+                  ])->columnSpanFull()
 
         ]);
 
