@@ -20,7 +20,7 @@ class PostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
-
+    protected static ?string $navigationGroup = "Blog";
 
 
     public static function form(Form $form): Form
@@ -42,7 +42,7 @@ class PostResource extends Resource
                                 Forms\Components\MarkdownEditor::make('content')->required()->columnSpanFull(),
                                 Forms\Components\FileUpload::make('thumbnail')->label('Photo')->disk('public')->directory('thumbnail')->required(),
 
-                                Forms\Components\TagsInput::make('tage')->required(),
+//                                Forms\Components\TagsInput::make('tage')->required(),
                                 Forms\Components\Checkbox::make('publish')->required(),
                             ])
                     ])->columnSpanFull(),

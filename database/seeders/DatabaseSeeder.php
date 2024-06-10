@@ -17,6 +17,5 @@ class DatabaseSeeder extends Seeder
         $clients = Client::factory(100)->create();
         $user = User::factory(100)->create();
 
-
     }
 }
