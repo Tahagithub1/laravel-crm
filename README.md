@@ -1,4 +1,4 @@
-![Screenshot from 2024-06-12 16-03-56](https://github.com/Tahagithub1/laravel-crm/assets/153533715/40ea52c8-672f-4047-b2eb-e82e50748c6b)
+![Screenshot from 2024-06-12 17-00-02](https://github.com/Tahagithub1/laravel-crm/assets/153533715/abf6ee78-a329-49dd-973e-149fb453de00)
 
 
 ![Screenshot from 2024-06-12 16-05-10](https://github.com/Tahagithub1/laravel-crm/assets/153533715/a2ac0318-f904-4649-aa7c-62b60899e9da)
